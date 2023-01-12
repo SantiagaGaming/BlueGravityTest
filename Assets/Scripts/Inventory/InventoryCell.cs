@@ -4,5 +4,12 @@ using UnityEngine;
 
 public class InventoryCell : MonoBehaviour
 {
-    public Item Item;
+   [HideInInspector] public Item Item { get; set; }
+    public void InitItem(Item item)
+    {
+        Item = item;
+        Item.transform.position = transform.position;
+        item.transform.SetParent(transform);
+
+    }
 }

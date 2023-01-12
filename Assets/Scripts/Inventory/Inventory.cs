@@ -12,7 +12,7 @@ public class Inventory : MonoBehaviour
         InventoryCell tempCell = Cells.FirstOrDefault(i => i.Item == null);
         if (tempCell == null)
             return;
-        tempCell.Item = item;
+        tempCell.InitItem(item);
     }
     public void DeleteItem(Item item)
     {

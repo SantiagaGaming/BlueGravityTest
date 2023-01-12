@@ -169,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameView: {fileID: 793065591}
   _player: {fileID: 1204625210}
+  _invents: {fileID: 1985774716}
 --- !u!1 &142167229
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,6 +1334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a85efda3ef7c7064a86ffc22db048861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AcceptButtonState: 0
   _coinsText: {fileID: 997288708}
   _tradingText: {fileID: 2044190321}
   _acceptTradingScreen: {fileID: 630617539}
@@ -3071,6 +3073,11 @@ MonoBehaviour:
   _playerInvent: {fileID: 564271132}
   _shopInvent: {fileID: 750200337}
   _prefub: {fileID: 7793204734162751821, guid: f6ad6fb0176061a47af7dabd45a9567e, type: 3}
+  _items:
+  - {fileID: 1582002485740883773, guid: c0cf2201dfd73d848b6cb480f321db82, type: 3}
+  - {fileID: 5735026154602851299, guid: 69c8dc752ce2254469436157ddb08c6d, type: 3}
+  - {fileID: 9014985779846375195, guid: 1bcd8c48e21676f48b05be04ced0d03b, type: 3}
+  - {fileID: 8915173404201031731, guid: 9c73a26b9f8dd8941a9fb90e933cb414, type: 3}
 --- !u!1 &2025724637
 GameObject:
   m_ObjectHideFlags: 0

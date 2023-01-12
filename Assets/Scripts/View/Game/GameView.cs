@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-
+public enum AcceptTradingButtonState
+{
+    EnterShop,
+    Purchase
+}
 public class GameView : MonoBehaviour
 {
     public UnityAction OnAcceptTradingButtonTap;
+    public UnityAction OnAcceptPurchaseButtonTap;
     public UnityAction OnDenyTradingButtonTap;
 
+    [HideInInspector] public AcceptTradingButtonState AcceptButtonState = AcceptTradingButtonState.EnterShop;
     [SerializeField] private Text _coinsText;
     [SerializeField] private Text _tradingText;
-
     [SerializeField] private GameObject _acceptTradingScreen;
     [SerializeField] private GameObject _acceptTradingButton;
     [SerializeField] private GameObject _denyTradingButton;
@@ -39,9 +44,9 @@ public class GameView : MonoBehaviour
         }
         else _tellStory = true;
     }
-    public void SetTradingText(string text)
+    public void SetTradingText(string text, bool answer)
     {
-        StartCoroutine(StoryStyleTextCo(text));
+        StartCoroutine(StoryStyleTextCo(text,answer));
     }
 
     public void ActivatePlayerInventory(bool value)
@@ -52,7 +57,7 @@ public class GameView : MonoBehaviour
     {
         _shopInventory.SetActive(value);
     }
-    private IEnumerator StoryStyleTextCo(string text)
+    private IEnumerator StoryStyleTextCo(string text, bool answer)
     {
         _acceptTradingButton.SetActive(false);
         _denyTradingButton.SetActive(false);
@@ -64,7 +69,22 @@ public class GameView : MonoBehaviour
             _tradingText.text += item;
             yield return new WaitForSeconds(0.1f);
         }
-        _acceptTradingButton.SetActive(true);
-        _denyTradingButton.SetActive(true);
+        if(answer)
+        {
+            _acceptTradingButton.SetActive(true);
+            _denyTradingButton.SetActive(true);
+
+        }
+         }
+    public void ChangeAcceptButtonEvent()
+    {
+        _acceptTradingButton.GetComponent<Button>().onClick.RemoveAllListeners();
+        if (AcceptButtonState == AcceptTradingButtonState.EnterShop)
+        {
+            _acceptTradingButton.GetComponent<Button>().onClick.AddListener(OnAcceptTradingButtonTap);
+        }
+        else if (AcceptButtonState == AcceptTradingButtonState.Purchase)
+            _acceptTradingButton.GetComponent<Button>().onClick.AddListener(OnAcceptPurchaseButtonTap);
+
     }
 }
