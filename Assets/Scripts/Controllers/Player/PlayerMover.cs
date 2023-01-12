@@ -5,12 +5,9 @@ using UnityEngine;
 public class PlayerMover : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed;
+
     private Rigidbody2D _rb;
-    //private Player _player;
-    private void Awake()
-    {
-      //  _player = GetComponent<Player>();
-    }
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
