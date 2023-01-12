@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+
    [HideInInspector] public InventoryCell[] Cells { get; set; } = new InventoryCell[6];
     public int GetInventLenght => Cells.Length;
     public void AddItem(Item item)

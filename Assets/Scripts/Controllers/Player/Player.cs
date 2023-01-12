@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     {
         if (collision.TryGetComponent(out Coin coin))
             coin.DeactivateCoin();
-        if (collision.TryGetComponent(out TradingCollier tradingCollider))
+        if (collision.TryGetComponent(out TradingCollider tradingCollider))
         {
             OnTouchTradingCollider?.Invoke(true);
         }
@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out TradingCollier tradingCollider))
+        if (collision.TryGetComponent(out TradingCollider tradingCollider))
             OnTouchTradingCollider?.Invoke(false);
     }
 }

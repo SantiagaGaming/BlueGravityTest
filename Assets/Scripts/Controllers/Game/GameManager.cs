@@ -5,11 +5,21 @@ using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour
 {
+    public enum InventInteractionState
+    {
+        None,
+        Trade,
+        Wear
+    }
     public static GameManager Instance;
 
     [SerializeField] private GameView _gameView;
     [SerializeField] private Player _player;
     [SerializeField] private InitInvents _invents;
+    [SerializeField] private ItemOnPlayer _shirt;
+    [SerializeField] private ItemOnPlayer _pants;
+
+    public InventInteractionState InventState { get; private set; } = InventInteractionState.None;
     private Item _currentItem;
     private int _coins;
     private void Awake()
@@ -27,17 +37,23 @@ public class GameManager : MonoBehaviour
         _player.OnTouchTradingCollider += OnActivateAcceptTradingScreen;
         _gameView.OnAcceptTradingButtonTap += OnActivateTradingScreen;
         _gameView.OnDenyTradingButtonTap += OnDeactivateTradingScreen;
-        _gameView.OnAcceptPurchaseButtonTap += OnBuyItem;
+        _gameView.OnAcceptPurchaseButtonTap += OnBuySellItem;
+        _gameView.OnInventButtonTap += OnShowPlayerInvent;
     }
     private void OnDisable()
     {
         _player.OnTouchTradingCollider -= OnActivateAcceptTradingScreen;
         _gameView.OnAcceptTradingButtonTap -= OnActivateTradingScreen;
         _gameView.OnDenyTradingButtonTap -= OnDeactivateTradingScreen;
-        _gameView.OnAcceptPurchaseButtonTap -= OnBuyItem;
+        _gameView.OnAcceptPurchaseButtonTap -= OnBuySellItem;
+        _gameView.OnInventButtonTap -= OnShowPlayerInvent;
     }
     private void OnActivateAcceptTradingScreen(bool value)
     {
+        if (InventState == InventInteractionState.Wear)
+            return;
+        _gameView.EnableInventButton(!value);
+        InventState = InventInteractionState.Trade;
         _gameView.AcceptButtonState = AcceptTradingButtonState.EnterShop;
         _gameView.ChangeAcceptButtonEvent();
         _gameView.ActivateAcceptTradingScreen(value);
@@ -48,7 +64,6 @@ public class GameManager : MonoBehaviour
             _gameView.ActivateShopInventory(false);
             _gameView.ActivatePlayerInventory(false);
         }
-       
     }
     private void OnActivateTradingScreen()
     {
@@ -58,44 +73,96 @@ public class GameManager : MonoBehaviour
     private void OnDeactivateTradingScreen()
     {
         OnActivateAcceptTradingScreen(false);
+        InventState = InventInteractionState.None;
     }
     public void SetCurrentItem(Item item)
     {
         _currentItem = item;
-        _gameView.ActivateAcceptTradingScreen(true);
-        _gameView.AcceptButtonState = AcceptTradingButtonState.Purchase;
-        _gameView.ChangeAcceptButtonEvent();
-        if(_currentItem.ItemInvent==_invents.ShopInvent)
-        _gameView.SetTradingText($" Byuing item: {item.ItemName} Costs: {item.Price}$. Deal?",true);
-        else if(_currentItem.ItemInvent == _invents.PlayerInvent)
-            _gameView.SetTradingText($" Selling item: {item.ItemName} Costs: {item.Price}$. Deal?", true);
-    }
-    private void OnBuyItem()
-    {
-        if(_currentItem.ItemInvent==_invents.ShopInvent)
+        if (InventState ==InventInteractionState.Trade)
         {
-            if (_coins >= _currentItem.Price)
+            _gameView.ActivateAcceptTradingScreen(true);
+            _gameView.AcceptButtonState = AcceptTradingButtonState.Purchase;
+            _gameView.ChangeAcceptButtonEvent();
+            if (_currentItem.ItemInvent == _invents.ShopInvent)
+                _gameView.SetTradingText($" Buying item: {item.ItemName} Costs: {item.Price}$. Deal?", true);
+            else if (_currentItem.ItemInvent == _invents.PlayerInvent)
+                _gameView.SetTradingText($" Selling item: {item.ItemName} Costs: {item.Price}$. Deal?", true);
+        }
+        else if(InventState == InventInteractionState.Wear)
+        {
+            if(_currentItem.ItemInvent == _invents.PlayerInvent && _currentItem.Weared == false)
             {
-                _coins -= _currentItem.Price;
-                _gameView.ChangeCoinsText(_coins.ToString());
-                _invents.PlayerInvent.AddItem(_currentItem);
-                _currentItem.ItemInvent = _invents.PlayerInvent;
-                _invents.ShopInvent.DeleteItem(_currentItem);
-                _gameView.SetTradingText("Thanks!", false);
+                if (item.ItemType == ItemType.Pants)
+                {
+                    _pants.InitItem(item);
+                    _currentItem.Weared = true;
+                }
+                  
+                else if (item.ItemType == ItemType.Shirt)
+                {
+                    _shirt.InitItem(item);
+                    _currentItem.Weared = true;
+                }
+                _invents.PlayerInvent.DeleteItem(_currentItem);
             }
             else
+                OnBuySellItem();
+
+        }
+    }
+    private void OnBuySellItem()
+    {
+        if (InventState == InventInteractionState.Trade)
+        {
+            if (_currentItem.ItemInvent == _invents.ShopInvent)
             {
-                _gameView.SetTradingText($"Sorry, You don't have money for Item {_currentItem.ItemName}.", false);
+                if (_coins >= _currentItem.Price)
+                {
+                    _coins -= _currentItem.Price;
+                    _gameView.ChangeCoinsText(_coins.ToString());
+                    _invents.PlayerInvent.AddItem(_currentItem);
+                    _currentItem.ItemInvent = _invents.PlayerInvent;
+                    _invents.ShopInvent.DeleteItem(_currentItem);
+                    _gameView.SetTradingText("Thanks!", false);
+                }
+                else
+                {
+                    _gameView.SetTradingText($"Sorry, You don't have money for Item {_currentItem.ItemName}.", false);
+                }
+            }
+            else if (_currentItem.ItemInvent == _invents.PlayerInvent)
+            {
+                _coins += _currentItem.Price;
+                _gameView.ChangeCoinsText(_coins.ToString());
+                _invents.ShopInvent.AddItem(_currentItem);
+                _currentItem.ItemInvent = _invents.ShopInvent;
+                _invents.PlayerInvent.DeleteItem(_currentItem);
+                _gameView.SetTradingText("Thanks!", false);
             }
         }
-        else if(_currentItem.ItemInvent == _invents.PlayerInvent)
+        else if( _currentItem.Weared == true)
         {
-            _coins += _currentItem.Price;
-            _gameView.ChangeCoinsText(_coins.ToString());
-            _invents.ShopInvent.AddItem(_currentItem);
-            _currentItem.ItemInvent = _invents.ShopInvent;
-            _invents.PlayerInvent.DeleteItem(_currentItem);
-            _gameView.SetTradingText("Thanks!", false);
+            _currentItem.Weared = false;
+            _invents.PlayerInvent.AddItem(_currentItem);
+            if (_currentItem.ItemType == ItemType.Pants)
+                _pants.InitItem(null);
+            else if(_currentItem.ItemType == ItemType.Shirt)
+                _shirt.InitItem(null);
+        }
+
+    }
+    private void OnShowPlayerInvent()
+    {
+        if(!_gameView.InventStatus())
+        {
+            _gameView.ActivatePlayerInventoryWithItems(true);
+            InventState = InventInteractionState.Wear;
+        }
+        else
+        {
+            _gameView.ActivatePlayerInventoryWithItems(false);
+            InventState = InventInteractionState.None;
+
         }
 
     }

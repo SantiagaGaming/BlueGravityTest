@@ -20,7 +20,9 @@ public class Item : MonoBehaviour
    [SerializeField] private int _price;
    [SerializeField] private ItemType _itemType;
    [SerializeField] private ItemColor _itemColor;
-    [HideInInspector] public Inventory ItemInvent;
+
+   [HideInInspector] public Inventory ItemInvent;
+   [HideInInspector] public bool Weared = false;
     private Button _button;
     private void Start()
     {

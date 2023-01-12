@@ -6,6 +6,7 @@ public class InitInvents : MonoBehaviour
 {
     [SerializeField] private Inventory _playerInvent;
     [SerializeField] private Inventory _shopInvent;
+    [SerializeField] private Inventory _wearedInvent;
     [SerializeField] private InventoryCell _prefub;
     [SerializeField] private Item[] _items;
     public Inventory PlayerInvent => _playerInvent;
