@@ -14,6 +14,6 @@ public class MenuView : MonoBehaviour
     private void Start()
     {
         _startGameButton.onClick.AddListener(OnStartButtonClick);
-        _startGameButton.onClick.AddListener(OnExitButtonClick);
+        _exitGameButton.onClick.AddListener(OnExitButtonClick);
     }
 }
