@@ -35,6 +35,7 @@ public class Item : MonoBehaviour
     public ItemColor ItemColor => _itemColor;
     private void SetCurrentItem()
     {
-        GameManager.Instance.SetCurrentItem(this);
+        InventActions inventActions = FindObjectOfType<InventActions>();
+        inventActions.SetCurrentItem(this);
     }
 }

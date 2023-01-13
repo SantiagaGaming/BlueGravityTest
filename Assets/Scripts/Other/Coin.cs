@@ -6,7 +6,9 @@ public class Coin : MonoBehaviour
 {
     public void DeactivateCoin()
     {
-        GameManager.Instance.ChangeCoins(1);
+        Player player  =FindObjectOfType<Player>();
+        player.ChangeCoins(1);
+        SoundPlayer.Instance.PlayCoinSound();
         gameObject.SetActive(false);
     }    
 }
