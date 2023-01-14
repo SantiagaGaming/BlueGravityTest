@@ -19,7 +19,7 @@ public class InitInvents : MonoBehaviour
     {
         FillInvent(_shopInvent);
         FillInvent(_playerInvent);
-        AddRandomItemsToInvent(_shopInvent,3);
+        AddRandomItemsToInvent(_shopInvent,5);
     }
     private void FillInvent(Inventory invent)
     {
