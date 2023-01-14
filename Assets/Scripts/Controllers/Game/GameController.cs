@@ -57,11 +57,11 @@ public class GameController : MonoBehaviour
     }
     private void OnPurchaseAction(AcceptTradingButtonState state)
     {
+      
         _gameView.ActivateAcceptTradingScreen(true);
         _gameView.AcceptButtonState = state;
         _gameView.ChangeAcceptButtonEvent();
     }
-
     private void OnActivateTradingScreen()
     {
         _gameView.ActivateShopInventory(true);

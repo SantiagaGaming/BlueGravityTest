@@ -54,7 +54,7 @@ public class GameView : MonoBehaviour
     }
     public void SetTradingText(string text, bool answer)
     {
-        StartCoroutine(StoryStyleTextCo(text,answer));
+        StartCoroutine(BreakAndRunStoryText(text,answer));
     }
 
     public void ActivatePlayerInventory(bool value)
@@ -75,23 +75,30 @@ public class GameView : MonoBehaviour
     }
     private IEnumerator StoryStyleTextCo(string text, bool answer)
     {
-        _acceptTradingButton.SetActive(false);
-        _denyTradingButton.SetActive(false);
-        _tradingText.text = "";
         foreach (var item in text)
         {
             if (!_tellStory)
-                break;
+                 break;
+            SoundPlayer.Instance.PlayTextSound();
             _tradingText.text += item;
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.09f);
         }
-        if(answer)
+        if(answer && _tellStory)
         {
             _acceptTradingButton.SetActive(true);
             _denyTradingButton.SetActive(true);
-
         }
-         }
+    }
+    private IEnumerator BreakAndRunStoryText(string text, bool answer)
+    {
+        _acceptTradingButton.SetActive(false);
+        _denyTradingButton.SetActive(false);
+        _tradingText.text = "";
+        _tellStory = false;
+        yield return new WaitForSeconds(0.1f);
+        _tellStory = true;
+        StartCoroutine(StoryStyleTextCo(text, answer));
+    }
     public void ChangeAcceptButtonEvent()
     {
         _acceptTradingButton.GetComponent<Button>().onClick.RemoveAllListeners();

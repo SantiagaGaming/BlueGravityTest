@@ -5,7 +5,7 @@ using UnityEngine;
 public class SoundPlayer : MonoBehaviour
 {
     public static SoundPlayer Instance;
-    [SerializeField] private AudioClip _coinSound, _tradeSound;
+    [SerializeField] private AudioClip _coinSound, _tradeSound,_textSound;
     private AudioSource _audioSource;
     private void Awake()
     {
@@ -16,8 +16,13 @@ public class SoundPlayer : MonoBehaviour
     public void PlayCoinSound()
     {
         _audioSource.PlayOneShot(_coinSound);
-    } public void PlayTradeSound()
+    }
+    public void PlayTradeSound()
     {
         _audioSource.PlayOneShot(_tradeSound);
+    }
+    public void PlayTextSound()
+    {
+        _audioSource.PlayOneShot(_textSound);
     }
 }

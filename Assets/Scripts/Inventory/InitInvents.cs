@@ -13,7 +13,7 @@ public class InitInvents : MonoBehaviour
 
     private float _yPos = 2f;
     private float _xPos;
-    private float _step = 39;
+    private float _step = 100;
 
     private void Start()
     {
@@ -23,7 +23,7 @@ public class InitInvents : MonoBehaviour
     }
     private void FillInvent(Inventory invent)
     {
-        _xPos = -111;
+        _xPos = -230;
         for (int i = 0; i < invent.GetInventLenght-1; i++)
         {
             InventoryCell temp = Instantiate(_prefub, invent.transform);

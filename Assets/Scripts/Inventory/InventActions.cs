@@ -20,7 +20,6 @@ public class InventActions : MonoBehaviour
 
     private Item _currentItem;
     public InventInteractionState InventState { get; set; } = InventInteractionState.None;
-
     public void SetCurrentItem(Item item)
     {
         _currentItem = item;
